@@ -3,9 +3,32 @@
 # Move distance delta = 1
 
 import numpy as np
+import matplotlib as mtpl
+#import imageio as imag
+import random
 
 D = np.zeros((100,100)) # 2D domain to explore
 q_init = [50,50] # Starting position
 delta = 1 # Move distance for each step from parent to new child
 
-print(D)
+
+class RRT:
+    # Variables 
+    def __init__(self):
+        self.vertices_list = [] # Has form [Node name, node coordinate, node parent]
+        self.edge = []
+
+    """         Functions           """
+
+    # Creates a random point
+    def rand_point(self):
+        rand_point_x = np.random.randint(0,99)
+        rand_point_y = np.random.randint(0,99)
+        return [rand_point_x, rand_point_y]
+
+
+RRT1 = RRT()
+RRT1.vertices_list.append(['q0', q_init, 'q0'])
+cor = RRT1.rand_point()
+print(cor)
+print(RRT1.vertices_list)
