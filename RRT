@@ -7,16 +7,23 @@ import matplotlib as mtpl
 #import imageio as imag
 import random
 
-D = np.zeros((100,100)) # 2D domain to explore
-q_init = [50,50] # Starting position
-delta = 1 # Move distance for each step from parent to new child
+
+
+"""         RRT Class           """
 
 
 class RRT:
     # Variables 
     def __init__(self):
         self.vertices_list = [] # Has form [Node name, node coordinate, node parent]
-        self.edge = []
+        self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
+        self.k = 4 # Number of itterations/vertices/nodes
+        self.q_init = [50,50] # Starting position
+        self.delta = 1 # Move distance for each step from parent to new child
+        # Explore domai/matrix
+        self.D = np.zeros((100,100)) # 2D domain to explore
+
+
 
     """         Functions           """
 
@@ -27,8 +34,12 @@ class RRT:
         return [rand_point_x, rand_point_y]
 
 
-RRT1 = RRT()
-RRT1.vertices_list.append(['q0', q_init, 'q0'])
+
+
+RRT1 = RRT() # Create an object of class RRT
+
+RRT1.vertices_list.append(['q0', RRT1.q_init, 'q0']) # Add starting position/node to vertice list
+
 cor = RRT1.rand_point()
 print(cor)
 print(RRT1.vertices_list)
