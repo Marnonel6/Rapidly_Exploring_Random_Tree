@@ -20,7 +20,7 @@ np.random.seed(19680801)
 class RRT:
     # Variables 
     def __init__(self):
-        self.vertices_list = [] # (G) Has form [Node name, node coordinate, node parent]
+        self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
         self.k = 4 # Number of itterations/vertices/nodes
         self.q_init = [50,50] # Starting position
@@ -35,13 +35,11 @@ class RRT:
     """         Functions           """
 
     # Creates a random point
-    def rand_point(self):
-        rand_point_x = np.random.randint(0,99)
-        rand_point_y = np.random.randint(0,99)
+    def Random_configuration(self):
+        rand_point_x = np.random.randint(0,self.D.shape[0])
+        rand_point_y = np.random.randint(0,self.D.shape[1])
         return [rand_point_x, rand_point_y]
 
-
-    #def Random_configuration(D):
 
     #def Nearest_node(qrandom, G):
 
@@ -51,37 +49,43 @@ class RRT:
 
 
 
+"""         Main Body Code Starts           """
+
+
+
 RRT1 = RRT() # Create an object of class RRT
 
+
+
+# Add starting position/node to vertice list
+RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) 
+
+
 # NB change the 3rd argument to save the parent this will come from def nearest_node function
-RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, 'q0']) # Add starting position/node to vertice list
+RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) 
 
 
-RRT1.q_rand = RRT1.rand_point()
+RRT1.q_rand = RRT1.Random_configuration()
 
-#print(RRT1.q_rand)
-#print(RRT1.vertices_list)
-#print(RRT1.vertices_list[0][0])
+print(RRT1.q_rand)
 
 
+#RRT1.vertices_list.append([len(RRT1.vertices_list), [60,70], [50,50]])
+#RRT1.vertices_list.append([len(RRT1.vertices_list), [62,83], [60,70]])
+#RRT1.vertices_list.append([len(RRT1.vertices_list), [80,90], [62,83]])
 
 
-RRT1.vertices_list.append([len(RRT1.vertices_list), [60,70], 'q0'])
-RRT1.vertices_list.append([len(RRT1.vertices_list), [62,83], 'q0'])
-RRT1.vertices_list.append([len(RRT1.vertices_list), [80,90], 'q0'])
+
+"""         Plotting RRT           """
 
 
 # create random data
 data = RRT1.vertices_list
 
-# SPlit data in X and Y coordinates
-xdata1 = []
-ydata1 = []
-
 line_data = [] # Used to store each line segments two point - child and parent
 
-for i in range(0,len(data)-1):
-    line_data.append([data[i][1],data[i+1][1]]) #First one should be new shild and the next one should be the parent
+for i in range(0,len(data)):
+    line_data.append([data[i][1],data[i][2]]) #First one is the child and the second one is the paretn
 
 lc = LineCollection(line_data) # Make into a collection
 
