@@ -3,6 +3,7 @@
 # Move distance delta = 1
 
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 #import imageio as imag
@@ -41,9 +42,31 @@ class RRT:
         return [rand_point_x, rand_point_y]
 
 
-    #def Nearest_node(qrandom, G):
 
-    #def New_configuration(qnear,qrandom,delta):
+    # Determins the nearest node and adds it to the vertices list in this config: [node_name,[new node coordinates],[parent node coordinates]]
+    def Nearest_node(self, q_rand, vertices_list):
+
+        # Pythagorean theorem
+        x = np.square(q_rand[0]-vertices_list[0][1][0])
+        y = np.square(q_rand[1]-vertices_list[0][1][1])
+        pythag = np.sqrt(x+y)
+
+        #print("Euclidean distance from x to y: ", pythag)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #def New_configuration(self, qnear,qrandom,delta):
 
 
 
@@ -61,13 +84,26 @@ RRT1 = RRT() # Create an object of class RRT
 RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) 
 
 
-# NB change the 3rd argument to save the parent this will come from def nearest_node function
-RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) 
 
 
+
+# Generate a random point
 RRT1.q_rand = RRT1.Random_configuration()
 
 print(RRT1.q_rand)
+
+
+
+# Get nearest vertex
+RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
+
+
+# NB change the 3rd argument to save the parent this will come from def nearest_node function
+#vertices_list.append([len(vertices_list), [should be new node coor], [parent coor]]) 
+
+
+
+
 
 
 #RRT1.vertices_list.append([len(RRT1.vertices_list), [60,70], [50,50]])
