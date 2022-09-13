@@ -1,0 +1,11 @@
+# D = [0,100]x[0,100]
+# Initial position - q_init = (50,50)
+# Move distance delta = 1
+
+import numpy as np
+
+D = np.zeros((100,100)) # 2D domain to explore
+q_init = [50,50] # Starting position
+delta = 1 # Move distance for each step from parent to new child
+
+print(D)
