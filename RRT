@@ -3,10 +3,15 @@
 # Move distance delta = 1
 
 import numpy as np
-import matplotlib as mtpl
+import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
 #import imageio as imag
 import random
 
+
+# Delete this otherwise random will be same number sequence
+# Fixing random state for reproducibility
+np.random.seed(19680801) 
 
 
 """         RRT Class           """
@@ -15,10 +20,12 @@ import random
 class RRT:
     # Variables 
     def __init__(self):
-        self.vertices_list = [] # Has form [Node name, node coordinate, node parent]
+        self.vertices_list = [] # (G) Has form [Node name, node coordinate, node parent]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
         self.k = 4 # Number of itterations/vertices/nodes
         self.q_init = [50,50] # Starting position
+        self.q_near = [] # This is the nearest node to the random point
+        self.q_rand = [] # Contains the new random node from "def rand_point(self)"
         self.delta = 1 # Move distance for each step from parent to new child
         # Explore domai/matrix
         self.D = np.zeros((100,100)) # 2D domain to explore
@@ -34,12 +41,60 @@ class RRT:
         return [rand_point_x, rand_point_y]
 
 
+    #def Random_configuration(D):
+
+    #def Nearest_node(qrandom, G):
+
+    #def New_configuration(qnear,qrandom,delta):
+
+
+
 
 
 RRT1 = RRT() # Create an object of class RRT
 
-RRT1.vertices_list.append(['q0', RRT1.q_init, 'q0']) # Add starting position/node to vertice list
+# NB change the 3rd argument to save the parent this will come from def nearest_node function
+RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, 'q0']) # Add starting position/node to vertice list
 
-cor = RRT1.rand_point()
-print(cor)
-print(RRT1.vertices_list)
+
+RRT1.q_rand = RRT1.rand_point()
+
+#print(RRT1.q_rand)
+#print(RRT1.vertices_list)
+#print(RRT1.vertices_list[0][0])
+
+
+
+
+RRT1.vertices_list.append([len(RRT1.vertices_list), [60,70], 'q0'])
+RRT1.vertices_list.append([len(RRT1.vertices_list), [62,83], 'q0'])
+RRT1.vertices_list.append([len(RRT1.vertices_list), [80,90], 'q0'])
+
+
+# create random data
+data = RRT1.vertices_list
+
+# SPlit data in X and Y coordinates
+xdata1 = []
+ydata1 = []
+
+line_data = [] # Used to store each line segments two point - child and parent
+
+for i in range(0,len(data)-1):
+    line_data.append([data[i][1],data[i+1][1]]) #First one should be new shild and the next one should be the parent
+
+lc = LineCollection(line_data) # Make into a collection
+
+# plot the data
+fig = plt.figure()
+ax = fig.add_subplot()
+ax.add_collection(lc)
+
+# set the limits
+ax.set_xlim([0, 100])
+ax.set_ylim([0, 100])
+
+ax.set_title('Rapid Exploring Random Tree')
+
+# display the plot
+plt.show()
