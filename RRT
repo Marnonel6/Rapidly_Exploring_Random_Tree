@@ -23,10 +23,11 @@ class RRT:
     def __init__(self):
         self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
-        self.K = 4 # Number of itterations/vertices/nodes
+        self.K = 1000 # Number of itterations/vertices/nodes
         self.q_init = [50,50] # Starting position
         self.q_near = [] # This is the nearest node to the random point
         self.q_rand = [] # Contains the new random node from "def rand_point(self)"
+        self.q_new = [] # Used to store the new node on a unit vecto
         self.delta = 1 # Move distance for each step from parent to new child
         # Explore domai/matrix
         self.D = np.zeros((100,100)) # 2D domain to explore
@@ -61,7 +62,7 @@ class RRT:
 
             distance_node.append(pythag)
         
-        print(distance_node)
+        #print('\n Distance node: ', distance_node)
 
         # Returns the minimum distance and the index of the min distance in the list distance_node
         min_dist = min(distance_node)
@@ -69,14 +70,26 @@ class RRT:
 
         # GET PARENT
         parent = vertices_list[min_index][1]
-        print('min: ', min_dist,'index: ', min_index, 'parent: ', parent)
-        
+        #print('min: ', min_dist,'index: ', min_index, 'parent: ', parent)
+
+        # Return parent/q_near
+        return parent
         
 
 
 
     def New_configuration(self, q_near, q_rand, delta):
+        
+        # Calculate the unit vector
+        distance = [q_rand[0] - q_near[0], q_rand[1] - q_near[1]]
+        norm = np.sqrt([(np.square(q_rand[0] - q_near[0])) + (np.square(q_rand[1] - q_near[1]))])
+        unit_vector = distance/norm 
+        # print('distance: ',distance ,' norm: ', norm,' unit_vector: ', unit_vector)
 
+        new_node = q_near + unit_vector
+        # print('\n new_node: ', new_node)
+
+        return new_node
 
 
 
@@ -94,13 +107,12 @@ RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]])
 
 t = 0 # counting var for While
 # MAIN while loop
-while t < 4: #RRT1.K:
+while t < RRT1.K:
     t += 1 # Increment the counter
 
     # Generate a random point
     RRT1.q_rand = RRT1.Random_configuration()
-
-    print(RRT1.q_rand)
+    #print(RRT1.q_rand)
 
 
 
@@ -114,17 +126,20 @@ while t < 4: #RRT1.K:
 
 
     # Get nearest vertex
-    RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
+    RRT1.q_near = RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
+    #print(RRT1.q_near) # Parent
+
+    RRT1.q_new = RRT1.New_configuration(RRT1.q_near, RRT1.q_rand, RRT1.delta)
+
+    #print('RRT1.q_new: ', RRT1.q_new)
+
+    # 1ste arg: Name of new node, 2nd argument: New child/node cooordinate, 3rd argument: Parent coordinates
+    RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
+
+    
 
 
-    # NB change the 3rd argument to save the parent this will come from def nearest_node function
-    #vertices_list.append([len(vertices_list), [should be new node coor], [parent coor]]) 
-
-
-
-
-
-
+#print('RRT1: ', RRT1.vertices_list, '\n')
 
 
 """         Plotting RRT           """
@@ -136,7 +151,7 @@ data = RRT1.vertices_list
 line_data = [] # Used to store each line segments two point - child and parent
 
 for i in range(0,len(data)):
-    line_data.append([data[i][1],data[i][2]]) #First one is the child and the second one is the paretn
+    line_data.append([data[i][1],data[i][2]]) #First one is the child and the second one is the parent
 
 lc = LineCollection(line_data) # Make into a collection
 
