@@ -211,7 +211,19 @@ ax.add_collection(lc)
 """Collection random circle plot"""
 #print('RCG1.circle_list[0][1] =', RCG1.circle_list[0][1], '\n')
 #print('RCG1.circle_list[0][0] =', RCG1.circle_list[0][0], '\n')
-Circle_Params = CircleCollection([RCG1.circle_list[0][1]], offsets = RCG1.circle_list[0][0], transOffset=ax.transData, color = 'black') # Make into a collection
+
+circle_radius_list = []
+circle_centre_list = []
+#Add for loop to loop through RCG1.circle_list and append all RADIUS
+for i in range(0,len(RCG1.circle_list)):
+    circle_radius_list.append(RCG1.circle_list[i][1])
+    #Add for loop to loop through RCG1.circle_list and append all CENTRE COORS
+    circle_centre_list.append(RCG1.circle_list[i][0])
+
+Circle_Params = CircleCollection([circle_radius_list], offsets = circle_centre_list, transOffset=ax.transData, color = 'black') # Make into a collection
+
+
+#Circle_Params = CircleCollection([RCG1.circle_list[0][1]], offsets = RCG1.circle_list[0][0], transOffset=ax.transData, color = 'black') # Make into a collection
 #Circle_Params = CircleCollection([10], offsets = [15,15], transOffset=ax.transData ,color = 'black') # Make into a collection
 ax.add_collection(Circle_Params)
 
