@@ -6,6 +6,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
+from matplotlib.collections import CircleCollection
 #import imageio as imag
 import random
 
@@ -102,7 +103,7 @@ class Random_Circle_Generator:
         self.circle_list = [] # Has form [[center], [radius]] - Nested list
         self.C = 100 # Number of Circles
         self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
-        self.max_radius = 5 # Maximum radius that can be created
+        self.max_radius = 10 # Maximum radius that can be created
     
 
         """         Functions           """
@@ -185,6 +186,9 @@ while t < RRT1.K:
 # create random data
 data = RRT1.vertices_list
 
+
+                    ### PLOT LINE COLLECTION ###
+
 line_data = [] # Used to store each line segments two point - child and parent
 
 for i in range(0,len(data)):
@@ -197,29 +201,24 @@ fig = plt.figure()
 ax = fig.add_subplot()
 ax.add_collection(lc)
 
-#ac = fig.add_subplot()
-#ac.add_collection(plt.Circle(( 50 , 50 ), 20 ))
 
-# axes = fig.add_subplot() 
-# cc = plt.Circle(( 50 , 50 ), 25 ) 
- 
-# axes.set_aspect( 1 ) 
-# axes.add_artist( cc ) 
 
-# axes.set_xlim([0, 100])
-# axes.set_ylim([0, 100])
+                    ### PLOT CIRCLE COLLECTION ###
 
-Drawing_colored_circle = plt.Circle(( RCG1.circle_list[0][0][0] , RCG1.circle_list[0][0][1] ), RCG1.circle_list[0][1], color = 'black' )
- 
-#axes.set_aspect( 1 )
-ax.add_artist( Drawing_colored_circle )
+"""Single random circle plot"""
+#rawing_colored_circle = plt.Circle(( RCG1.circle_list[0][0][0] , RCG1.circle_list[0][0][1] ), RCG1.circle_list[0][1], color = 'black' )
+#ax.add_artist( Drawing_colored_circle )
+"""Collection random circle plot"""
+#print('RCG1.circle_list[0][1] =', RCG1.circle_list[0][1], '\n')
+#print('RCG1.circle_list[0][0] =', RCG1.circle_list[0][0], '\n')
+Circle_Params = CircleCollection([RCG1.circle_list[0][1]], offsets = RCG1.circle_list[0][0], transOffset=ax.transData, color = 'black') # Make into a collection
+#Circle_Params = CircleCollection([10], offsets = [15,15], transOffset=ax.transData ,color = 'black') # Make into a collection
+ax.add_collection(Circle_Params)
+
 
 # set the limits
 ax.set_xlim([0, 100])
 ax.set_ylim([0, 100])
-
-#ac.set_xlim([0, 100])
-#ac.set_ylim([0, 100])
 
 ax.set_title('Rapid Exploring Random Tree')
 
