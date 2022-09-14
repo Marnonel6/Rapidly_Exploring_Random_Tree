@@ -12,7 +12,7 @@ import random
 
 # Delete this otherwise random will be same number sequence
 # Fixing random state for reproducibility
-np.random.seed(19680801) 
+# np.random.seed(19680801) 
 
 
 """         RRT Class           """
@@ -23,7 +23,7 @@ class RRT:
     def __init__(self):
         self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
-        self.K = 1000 # Number of itterations/vertices/nodes
+        self.K = 100 # Number of itterations/vertices/nodes
         self.q_init = [50,50] # Starting position
         self.q_near = [] # This is the nearest node to the random point
         self.q_rand = [] # Contains the new random node from "def rand_point(self)"
@@ -94,6 +94,30 @@ class RRT:
 
 
 
+"""         Random Circle Generator Class     """
+
+class Random_Circle_Generator:
+    # Variables 
+    def __init__(self):
+        self.circle_list = [] # Has form [[center], [radius]] - Nested list
+        self.C = 100 # Number of Circles
+        self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
+        self.max_radius = 5 # Maximum radius that can be created
+    
+
+        """         Functions           """
+
+    # Creates a random point
+    def Random_configuration(self):
+        rand_centre_x = np.random.randint(0,self.D.shape[0])
+        rand_centre_y = np.random.randint(0,self.D.shape[1])
+        rand_radius = np.random.randint(0,self.max_radius)
+        return [rand_point_x, rand_point_y]
+
+
+
+
+
 """         Main Body Code Starts           """
 
 
@@ -104,6 +128,7 @@ RRT1 = RRT() # Create an object of class RRT
 # Add starting position/node to vertice list
 RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) 
 
+"""         While iteration loop for RRT           """
 
 t = 0 # counting var for While
 # MAIN while loop
@@ -113,17 +138,6 @@ while t < RRT1.K:
     # Generate a random point
     RRT1.q_rand = RRT1.Random_configuration()
     #print(RRT1.q_rand)
-
-
-
-
-    #RRT1.vertices_list.append([len(RRT1.vertices_list), [60,70], [50,50]])
-    #RRT1.vertices_list.append([len(RRT1.vertices_list), [62,83], [60,70]])
-    #RRT1.vertices_list.append([len(RRT1.vertices_list), [80,90], [62,83]])
-
-
-
-
 
     # Get nearest vertex
     RRT1.q_near = RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
@@ -137,6 +151,9 @@ while t < RRT1.K:
     RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
 
     
+
+
+
 
 
 #print('RRT1: ', RRT1.vertices_list, '\n')
@@ -160,11 +177,32 @@ fig = plt.figure()
 ax = fig.add_subplot()
 ax.add_collection(lc)
 
+#ac = fig.add_subplot()
+#ac.add_collection(plt.Circle(( 50 , 50 ), 20 ))
+
+# axes = fig.add_subplot() 
+# cc = plt.Circle(( 50 , 50 ), 25 ) 
+ 
+# axes.set_aspect( 1 ) 
+# axes.add_artist( cc ) 
+
+# axes.set_xlim([0, 100])
+# axes.set_ylim([0, 100])
+
+Drawing_colored_circle = plt.Circle(( 30 , 70 ), 5, color = 'black' )
+ 
+#axes.set_aspect( 1 )
+ax.add_artist( Drawing_colored_circle )
+
 # set the limits
 ax.set_xlim([0, 100])
 ax.set_ylim([0, 100])
+
+#ac.set_xlim([0, 100])
+#ac.set_ylim([0, 100])
 
 ax.set_title('Rapid Exploring Random Tree')
 
 # display the plot
 plt.show()
+
