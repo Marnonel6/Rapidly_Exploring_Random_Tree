@@ -29,7 +29,7 @@ class RRT:
         self.q_rand = [] # Contains the new random node from "def rand_point(self)"
         self.q_new = [] # Used to store the new node on a unit vecto
         self.delta = 1 # Move distance for each step from parent to new child
-        # Explore domai/matrix
+        # Explore domain/matrix
         self.D = np.zeros((100,100)) # 2D domain to explore
 
 
@@ -108,25 +108,45 @@ class Random_Circle_Generator:
         """         Functions           """
 
     # Creates a random point
-    def Random_configuration(self):
-        rand_centre_x = np.random.randint(0,self.D.shape[0])
-        rand_centre_y = np.random.randint(0,self.D.shape[1])
-        rand_radius = np.random.randint(0,self.max_radius)
-        return [rand_point_x, rand_point_y]
+    def Random_circle_configuration(self, D):
+        rand_centre_x = np.random.randint(0,D.shape[0])
+        rand_centre_y = np.random.randint(0,D.shape[1])
+        rand_radius = np.random.randint(1,self.max_radius+1) # '+1' because high is exlusive and low is inclusive
+        return [[rand_centre_x, rand_centre_y], rand_radius]
 
 
 
 
 
-"""         Main Body Code Starts           """
+"""                                    Main Body Code Starts                                      """
 
 
 
 RRT1 = RRT() # Create an object of class RRT
+RCG1 = Random_Circle_Generator() # Create onject for random circle generator
+
+
+"""         Random circle generator code           """
+n = 0 # Counter for creating X amount of circles (Needs to only be updated when a valid circle is created)
+
+while n < 1:
+    n+=1 # Move to update only when valid cicrcle is generated
+    #random_circle_config = RCG1.Random_circle_configuration(RRT1.D)
+    #RCG1.circle_list.append(random_circle_config)
+    RCG1.circle_list.append(RCG1.Random_circle_configuration(RRT1.D))
+    print('\n RCG1.circle_list = ',RCG1.circle_list)
+
+
+
+
 
 
 # Add starting position/node to vertice list
-RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) 
+RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) \
+
+
+
+
 
 """         While iteration loop for RRT           """
 
@@ -189,7 +209,7 @@ ax.add_collection(lc)
 # axes.set_xlim([0, 100])
 # axes.set_ylim([0, 100])
 
-Drawing_colored_circle = plt.Circle(( 30 , 70 ), 5, color = 'black' )
+Drawing_colored_circle = plt.Circle(( RCG1.circle_list[0][0][0] , RCG1.circle_list[0][0][1] ), RCG1.circle_list[0][1], color = 'black' )
  
 #axes.set_aspect( 1 )
 ax.add_artist( Drawing_colored_circle )
