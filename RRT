@@ -110,7 +110,7 @@ class Random_Circle_Generator:
     # Variables 
     def __init__(self):
         self.circle_list = [] # Has form [[center], [radius]] - Nested list
-        self.C = 15 # Number of Circles
+        self.C = 30 # Number of Circles
         self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
         self.max_radius = 10 # Maximum radius that can be created
     
@@ -121,7 +121,7 @@ class Random_Circle_Generator:
     def Random_circle_configuration(self, D):
         rand_centre_x = np.random.randint(0,D.shape[0])
         rand_centre_y = np.random.randint(0,D.shape[1])
-        rand_radius = np.random.randint(5,self.max_radius+1) # '+1' because high is exlusive and low is inclusive
+        rand_radius = np.random.randint(3,self.max_radius+1) # '+1' because high is exlusive and low is inclusive
         return [[rand_centre_x, rand_centre_y], rand_radius]
 
 
@@ -175,7 +175,7 @@ RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, RRT1.q_init])
 
 t = 0 # counting var for While
 # MAIN while loop
-while t < 1000: #RRT1.K:
+while t < RRT1.K:
     t += 1 # Increment the counter
 
 
