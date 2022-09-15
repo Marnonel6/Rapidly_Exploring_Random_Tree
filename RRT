@@ -3,6 +3,7 @@
 # Move distance delta = 1
 
 from calendar import c
+from turtle import circle
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -26,7 +27,8 @@ class RRT:
         self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
         self.K = 100 # Number of itterations/vertices/nodes
-        self.q_init = [50,50] # Starting position
+        #self.q_init = [50,50] # Starting position
+        self.q_init = [] # Starting position
         self.q_near = [] # This is the nearest node to the random point
         self.q_rand = [] # Contains the new random node from "def rand_point(self)"
         self.q_new = [] # Used to store the new node on a unit vecto
@@ -38,12 +40,18 @@ class RRT:
 
     """         Functions           """
 
+    # Creates a random starting point
+    def Random_starting_point(self):
+        rand_point_x = np.random.randint(0,self.D.shape[0])
+        rand_point_y = np.random.randint(0,self.D.shape[1])
+        return [rand_point_x, rand_point_y]
+
+
     # Creates a random point
     def Random_configuration(self):
         rand_point_x = np.random.randint(0,self.D.shape[0])
         rand_point_y = np.random.randint(0,self.D.shape[1])
         return [rand_point_x, rand_point_y]
-
 
 
 
@@ -85,11 +93,11 @@ class RRT:
         # Calculate the unit vector
         distance = [q_rand[0] - q_near[0], q_rand[1] - q_near[1]]
         norm = np.sqrt([(np.square(q_rand[0] - q_near[0])) + (np.square(q_rand[1] - q_near[1]))])
-        unit_vector = distance/norm 
-        # print('distance: ',distance ,' norm: ', norm,' unit_vector: ', unit_vector)
+        unit_vector = [distance[0]/norm[0], distance[1]/norm[0]]
+        #print('distance: ',distance ,' norm: ', norm,' unit_vector: ', unit_vector)
 
-        new_node = q_near + unit_vector
-        # print('\n new_node: ', new_node)
+        new_node = [q_near[0] + unit_vector[0], q_near[1] + unit_vector[1]]
+        #print('\n new_node: ', new_node)
 
         return new_node
 
@@ -102,7 +110,7 @@ class Random_Circle_Generator:
     # Variables 
     def __init__(self):
         self.circle_list = [] # Has form [[center], [radius]] - Nested list
-        self.C = 10 # Number of Circles
+        self.C = 15 # Number of Circles
         self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
         self.max_radius = 10 # Maximum radius that can be created
     
@@ -136,15 +144,28 @@ while n < RCG1.C:
     #random_circle_config = RCG1.Random_circle_configuration(RRT1.D)
     #RCG1.circle_list.append(random_circle_config)
     RCG1.circle_list.append(RCG1.Random_circle_configuration(RRT1.D))
-    print('\n RCG1.circle_list = ',RCG1.circle_list)
+    #print('\n RCG1.circle_list = ',RCG1.circle_list)
 
+
+# Generate random starting point and check if point is in a circle if it is generate a new starting point, if it isn't break while
+s = 0
+while s<1:
+
+    s = 1 # Set check to false to ensure while loop is broken if the 'if' condition is not met and thus the point is not in any circle
+    RRT1.q_init = RRT1.Random_starting_point()
+    print('RRT1.q_init = ', RRT1.q_init)
+
+    for i in range(0, len(RCG1.circle_list)):
+        # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
+        if (np.sqrt(np.square(RRT1.q_init[0]-RCG1.circle_list[i][0][0]) + (np.square(RRT1.q_init[1]-RCG1.circle_list[i][0][1])))) <= RCG1.circle_list[i][1]:
+            s = 0
 
 
 
 
 
 # Add starting position/node to vertice list
-RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]])
+RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, RRT1.q_init])
 
 
 
@@ -154,7 +175,7 @@ RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]])
 
 t = 0 # counting var for While
 # MAIN while loop
-while t < RRT1.K:
+while t < 5 :#RRT1.K:
     t += 1 # Increment the counter
 
     # Generate a random point
@@ -175,7 +196,7 @@ while t < RRT1.K:
     
 
 
-
+print('\n RRT1.vertices_list: ', RRT1.vertices_list, '\n \n \n')
 
 
 #print('RRT1: ', RRT1.vertices_list, '\n')
@@ -195,6 +216,7 @@ line_data = [] # Used to store each line segments two point - child and parent
 for i in range(0,len(data)):
     line_data.append([data[i][1],data[i][2]]) #First one is the child and the second one is the parent
 
+print('\n line_data: ', line_data)
 lc = LineCollection(line_data) # Make into a collection
 
 # plot the data
