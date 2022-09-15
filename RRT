@@ -2,6 +2,7 @@
 # Initial position - q_init = (50,50)
 # Move distance delta = 1
 
+from calendar import c
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -101,7 +102,7 @@ class Random_Circle_Generator:
     # Variables 
     def __init__(self):
         self.circle_list = [] # Has form [[center], [radius]] - Nested list
-        self.C = 100 # Number of Circles
+        self.C = 10 # Number of Circles
         self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
         self.max_radius = 10 # Maximum radius that can be created
     
@@ -112,7 +113,7 @@ class Random_Circle_Generator:
     def Random_circle_configuration(self, D):
         rand_centre_x = np.random.randint(0,D.shape[0])
         rand_centre_y = np.random.randint(0,D.shape[1])
-        rand_radius = np.random.randint(1,self.max_radius+1) # '+1' because high is exlusive and low is inclusive
+        rand_radius = np.random.randint(5,self.max_radius+1) # '+1' because high is exlusive and low is inclusive
         return [[rand_centre_x, rand_centre_y], rand_radius]
 
 
@@ -130,7 +131,7 @@ RCG1 = Random_Circle_Generator() # Create onject for random circle generator
 """         Random circle generator code           """
 n = 0 # Counter for creating X amount of circles (Needs to only be updated when a valid circle is created)
 
-while n < 1:
+while n < RCG1.C:
     n+=1 # Move to update only when valid cicrcle is generated
     #random_circle_config = RCG1.Random_circle_configuration(RRT1.D)
     #RCG1.circle_list.append(random_circle_config)
@@ -143,7 +144,7 @@ while n < 1:
 
 
 # Add starting position/node to vertice list
-RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]]) \
+RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, [50,50]])
 
 
 
@@ -205,13 +206,17 @@ ax.add_collection(lc)
 
                     ### PLOT CIRCLE COLLECTION ###
 
-"""Single random circle plot"""
-#rawing_colored_circle = plt.Circle(( RCG1.circle_list[0][0][0] , RCG1.circle_list[0][0][1] ), RCG1.circle_list[0][1], color = 'black' )
-#ax.add_artist( Drawing_colored_circle )
+for i in range(0,len(RCG1.circle_list)):
+    """Single random circle plot"""
+    Drawing_colored_circle = plt.Circle(( RCG1.circle_list[i][0][0] , RCG1.circle_list[i][0][1] ), RCG1.circle_list[i][1], color = 'black' )
+    ax.add_artist( Drawing_colored_circle )
+
 """Collection random circle plot"""
 #print('RCG1.circle_list[0][1] =', RCG1.circle_list[0][1], '\n')
 #print('RCG1.circle_list[0][0] =', RCG1.circle_list[0][0], '\n')
 
+
+""" This is for plotting with CircleCollectioin but keeps giving like a unit circle
 circle_radius_list = []
 circle_centre_list = []
 #Add for loop to loop through RCG1.circle_list and append all RADIUS
@@ -220,13 +225,19 @@ for i in range(0,len(RCG1.circle_list)):
     #Add for loop to loop through RCG1.circle_list and append all CENTRE COORS
     circle_centre_list.append(RCG1.circle_list[i][0])
 
-Circle_Params = CircleCollection([circle_radius_list], offsets = circle_centre_list, transOffset=ax.transData, color = 'black') # Make into a collection
+print('\n circle_radius_list: ', circle_radius_list)
+print('\n circle_centre_list: ', circle_centre_list)
+
+patches = [plt.Circle(center, size) for center, size in zip(circle_centre_list, circle_radius_list)]
+
+Circle_Params = CircleCollection(circle_radius_list, offsets = circle_centre_list, transOffset=ax.transData, color = 'black') # Make into a collection
 
 
 #Circle_Params = CircleCollection([RCG1.circle_list[0][1]], offsets = RCG1.circle_list[0][0], transOffset=ax.transData, color = 'black') # Make into a collection
-#Circle_Params = CircleCollection([10], offsets = [15,15], transOffset=ax.transData ,color = 'black') # Make into a collection
+#Circle_Params = CircleCollection([10,10,10], offsets = [15,15], transOffset=ax.transData ,color = 'black') # Make into a collection
 ax.add_collection(Circle_Params)
 
+"""
 
 # set the limits
 ax.set_xlim([0, 100])
