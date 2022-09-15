@@ -26,7 +26,7 @@ class RRT:
     def __init__(self):
         self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
-        self.K = 100 # Number of itterations/vertices/nodes
+        self.K = 1000 # Number of itterations/vertices/nodes
         #self.q_init = [50,50] # Starting position
         self.q_init = [] # Starting position
         self.q_near = [] # This is the nearest node to the random point
@@ -153,7 +153,7 @@ while s<1:
 
     s = 1 # Set check to false to ensure while loop is broken if the 'if' condition is not met and thus the point is not in any circle
     RRT1.q_init = RRT1.Random_starting_point()
-    print('RRT1.q_init = ', RRT1.q_init)
+    #print('RRT1.q_init = ', RRT1.q_init)
 
     for i in range(0, len(RCG1.circle_list)):
         # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
@@ -175,18 +175,38 @@ RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, RRT1.q_init])
 
 t = 0 # counting var for While
 # MAIN while loop
-while t < 5 :#RRT1.K:
+while t < 1000: #RRT1.K:
     t += 1 # Increment the counter
 
-    # Generate a random point
-    RRT1.q_rand = RRT1.Random_configuration()
-    #print(RRT1.q_rand)
 
-    # Get nearest vertex
-    RRT1.q_near = RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
-    #print(RRT1.q_near) # Parent
 
-    RRT1.q_new = RRT1.New_configuration(RRT1.q_near, RRT1.q_rand, RRT1.delta)
+
+    """ Collision detection/prevention algoritm """
+    z = 0
+    while z < 1:
+        z = 1
+        # Generate a random point
+        RRT1.q_rand = RRT1.Random_configuration()
+        #print(RRT1.q_rand)
+        
+        # Get nearest vertex
+        RRT1.q_near = RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
+        #print(RRT1.q_near) # Parent
+
+        RRT1.q_new = RRT1.New_configuration(RRT1.q_near, RRT1.q_rand, RRT1.delta)
+
+
+
+        for i in range(0, len(RCG1.circle_list)):
+            # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
+            if (np.sqrt(np.square(RRT1.q_new[0]-RCG1.circle_list[i][0][0]) + np.square(RRT1.q_new[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
+                z = 0
+            #print('RRT1.q_rand = ', RRT1.q_new ,'Dist = ', np.sqrt(np.square(RRT1.q_new[0]-RCG1.circle_list[i][0][0]) + np.square(RRT1.q_new[1]-RCG1.circle_list[i][0][1])), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
+
+
+
+
+        
 
     #print('RRT1.q_new: ', RRT1.q_new)
 
@@ -196,7 +216,7 @@ while t < 5 :#RRT1.K:
     
 
 
-print('\n RRT1.vertices_list: ', RRT1.vertices_list, '\n \n \n')
+#print('\n RRT1.vertices_list: ', RRT1.vertices_list, '\n \n \n')
 
 
 #print('RRT1: ', RRT1.vertices_list, '\n')
@@ -216,7 +236,7 @@ line_data = [] # Used to store each line segments two point - child and parent
 for i in range(0,len(data)):
     line_data.append([data[i][1],data[i][2]]) #First one is the child and the second one is the parent
 
-print('\n line_data: ', line_data)
+#print('\n line_data: ', line_data)
 lc = LineCollection(line_data) # Make into a collection
 
 # plot the data
