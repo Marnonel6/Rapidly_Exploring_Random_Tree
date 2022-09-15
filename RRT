@@ -225,12 +225,9 @@ while t < RRT1.K:
 """         Plotting RRT           """
 
 
+                    ### PLOT LINE COLLECTION ###
 # create random data
 data = RRT1.vertices_list
-
-
-                    ### PLOT LINE COLLECTION ###
-
 line_data = [] # Used to store each line segments two point - child and parent
 
 for i in range(0,len(data)):
@@ -243,6 +240,13 @@ lc = LineCollection(line_data) # Make into a collection
 fig = plt.figure()
 ax = fig.add_subplot()
 ax.add_collection(lc)
+
+
+
+                    ### Plot start point ###
+start_point_radius = [1] # Choose start point size
+Draw_start_point = plt.Circle((RRT1.q_init[0],RRT1.q_init[1]), start_point_radius[0], color = 'Green')
+ax.add_artist( Draw_start_point )
 
 
 
