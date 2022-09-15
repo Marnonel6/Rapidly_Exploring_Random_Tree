@@ -28,6 +28,7 @@ class RRT:
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
         self.K = 1000 # Number of itterations/vertices/nodes
         #self.q_init = [50,50] # Starting position
+        self.q_goal = [] # Goal position
         self.q_init = [] # Starting position
         self.q_near = [] # This is the nearest node to the random point
         self.q_rand = [] # Contains the new random node from "def rand_point(self)"
@@ -42,6 +43,12 @@ class RRT:
 
     # Creates a random starting point
     def Random_starting_point(self):
+        rand_point_x = np.random.randint(0,self.D.shape[0])
+        rand_point_y = np.random.randint(0,self.D.shape[1])
+        return [rand_point_x, rand_point_y]
+
+    # Creates a random goal
+    def Random_goal_point(self):
         rand_point_x = np.random.randint(0,self.D.shape[0])
         rand_point_y = np.random.randint(0,self.D.shape[1])
         return [rand_point_x, rand_point_y]
@@ -147,6 +154,10 @@ while n < RCG1.C:
     #print('\n RCG1.circle_list = ',RCG1.circle_list)
 
 
+
+
+
+"""   Collision detection/prevention algoritm for START & GOAL point    """
 # Generate random starting point and check if point is in a circle if it is generate a new starting point, if it isn't break while
 s = 0
 while s<1:
@@ -159,6 +170,18 @@ while s<1:
         # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
         if (np.sqrt(np.square(RRT1.q_init[0]-RCG1.circle_list[i][0][0]) + (np.square(RRT1.q_init[1]-RCG1.circle_list[i][0][1])))) <= RCG1.circle_list[i][1]:
             s = 0
+
+p = 0
+while p<1:
+
+    p = 1 # Set check to false to ensure while loop is broken if the 'if' condition is not met and thus the point is not in any circle
+    RRT1.q_goal = RRT1.Random_goal_point()
+    #print('RRT1.q_goal = ', RRT1.q_goal)
+
+    for i in range(0, len(RCG1.circle_list)):
+        # If distance between goal point and a circles radius <= that circle raius then goal point is in circle, thus get a new goal point.
+        if (np.sqrt(np.square(RRT1.q_goal[0]-RCG1.circle_list[i][0][0]) + (np.square(RRT1.q_goal[1]-RCG1.circle_list[i][0][1])))) <= RCG1.circle_list[i][1]:
+            p = 0
 
 
 
@@ -203,9 +226,6 @@ while t < RRT1.K:
                 z = 0
             #print('RRT1.q_rand = ', RRT1.q_new ,'Dist = ', np.sqrt(np.square(RRT1.q_new[0]-RCG1.circle_list[i][0][0]) + np.square(RRT1.q_new[1]-RCG1.circle_list[i][0][1])), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
 
-
-
-
         
 
     #print('RRT1.q_new: ', RRT1.q_new)
@@ -247,6 +267,11 @@ ax.add_collection(lc)
 start_point_radius = [1] # Choose start point size
 Draw_start_point = plt.Circle((RRT1.q_init[0],RRT1.q_init[1]), start_point_radius[0], color = 'Green')
 ax.add_artist( Draw_start_point )
+
+                    ### Plot goal point ###
+goal_point_radius = [1] # Choose goal point size
+Draw_goal_point = plt.Circle((RRT1.q_goal[0],RRT1.q_goal[1]), goal_point_radius[0], color = 'Blue')
+ax.add_artist( Draw_goal_point )
 
 
 
