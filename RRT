@@ -15,7 +15,7 @@ import random
 
 # Delete this otherwise random will be same number sequence
 # Fixing random state for reproducibility
-# np.random.seed(19680801) 
+#np.random.seed(19680801) 
 
 
 """         RRT Class           """
@@ -26,7 +26,7 @@ class RRT:
     def __init__(self):
         self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
-        self.K = 1000 # Number of itterations/vertices/nodes
+        self.K = 500 # Number of itterations/vertices/nodes
         #self.q_init = [50,50] # Starting position
         self.q_goal = [] # Goal position
         self.q_init = [] # Starting position
@@ -59,6 +59,17 @@ class RRT:
         rand_point_x = np.random.randint(0,self.D.shape[0])
         rand_point_y = np.random.randint(0,self.D.shape[1])
         return [rand_point_x, rand_point_y]
+
+    
+    # Finds the closest point on a ine relative to a coordinate
+    def closest_point(self, p1, p2, p3):
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = p3
+        dx, dy = x2-x1, y2-y1
+        det = dx*dx + dy*dy
+        a = (dy*(y3-y1)+dx*(x3-x1))/det
+        return x1+a*dx, y1+a*dy
 
 
 
@@ -208,12 +219,13 @@ while t < RRT1.K:
     z = 0
     while z < 1:
         z = 1
+        n = 1 # for goal check
         # Generate a random point
         RRT1.q_rand = RRT1.Random_configuration()
         #print(RRT1.q_rand)
         
         # Get nearest vertex
-        RRT1.q_near = RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new eandom node and the vertices list
+        RRT1.q_near = RRT1.Nearest_node(RRT1.q_rand, RRT1.vertices_list) # Send the new random node and the vertices list
         #print(RRT1.q_near) # Parent
 
         RRT1.q_new = RRT1.New_configuration(RRT1.q_near, RRT1.q_rand, RRT1.delta)
@@ -221,17 +233,51 @@ while t < RRT1.K:
 
 
         for i in range(0, len(RCG1.circle_list)):
+
+            """ Checks only point intersect not line """ 
             # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
             if (np.sqrt(np.square(RRT1.q_new[0]-RCG1.circle_list[i][0][0]) + np.square(RRT1.q_new[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
                 z = 0
             #print('RRT1.q_rand = ', RRT1.q_new ,'Dist = ', np.sqrt(np.square(RRT1.q_new[0]-RCG1.circle_list[i][0][0]) + np.square(RRT1.q_new[1]-RCG1.circle_list[i][0][1])), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
+            
 
+
+            """ Check closest point intersect using a line """ """
+            #print('RRT1.q_new =',RRT1.q_new, '  RRT1.q_near =  ',RRT1.q_near, 'RCG1.circle_list[i][0] = ',RCG1.circle_list[i][0])
+            #p_close = RRT1.closest_point((RRT1.q_new[0],RRT1.q_new[1]), (RRT1.q_near[0], RRT1.q_near[1]), (RCG1.circle_list[i][0][0],RCG1.circle_list[i][0][1]))
+            p_close = RRT1.closest_point(RRT1.q_near, RRT1.q_new, RCG1.circle_list[i][0])
+            # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
+            if (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
+                z = 0
+            #print('p_close = ', p_close ,'Dist = ', (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
+            """
+
+            # for goal check
+            """ Check closest point intersect using a line """ 
+            #print('RRT1.q_new =',RRT1.q_new, '  RRT1.q_near =  ',RRT1.q_near, 'RCG1.circle_list[i][0] = ',RCG1.circle_list[i][0])
+            #p_close = RRT1.closest_point((RRT1.q_new[0],RRT1.q_new[1]), (RRT1.q_near[0], RRT1.q_near[1]), (RCG1.circle_list[i][0][0],RCG1.circle_list[i][0][1]))
+            p_close = RRT1.closest_point(RRT1.q_new, RRT1.q_goal, RCG1.circle_list[i][0])
+            # If distance between start point and a circles radius <= that circle radius then start point is in circle, thus get a new start point.
+            if (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
+                 n = 0
+
+
+        # for goal check
+        if n == 1:
+            t = RRT1.K
+            print('Goal Reached')
+            # 1ste arg: Name of new node, 2nd argument: New child/node cooordinate, 3rd argument: Parent coordinates
+            RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
+            RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_goal]) 
+
+            #print('p_close = ', p_close ,'Dist = ', (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
+            
         
 
     #print('RRT1.q_new: ', RRT1.q_new)
-
-    # 1ste arg: Name of new node, 2nd argument: New child/node cooordinate, 3rd argument: Parent coordinates
-    RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
+    if n == 0: # for goal check
+        # 1ste arg: Name of new node, 2nd argument: New child/node cooordinate, 3rd argument: Parent coordinates
+        RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
 
     
 
