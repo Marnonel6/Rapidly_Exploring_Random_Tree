@@ -18,9 +18,9 @@ import random
 # Fixing random state for reproducibility
 #np.random.seed(19680801) 
 
-
+"""                             """
 """         RRT Class           """
-
+"""                             """
 
 class RRT:
     # Variables 
@@ -39,9 +39,9 @@ class RRT:
         self.D = np.zeros((100,100)) # 2D domain to explore
 
 
-
+    """                             """
     """         Functions           """
-
+    """                             """
     # Creates a random starting point
     def Random_starting_point(self):
         rand_point_x = np.random.randint(0,self.D.shape[0])
@@ -122,9 +122,9 @@ class RRT:
 
 
 
-
+"""                                           """
 """         Random Circle Generator Class     """
-
+"""                                           """
 class Random_Circle_Generator:
     # Variables 
     def __init__(self):
@@ -133,9 +133,9 @@ class Random_Circle_Generator:
         self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
         self.max_radius = 10 # Maximum radius that can be created
     
-
+        """                             """
         """         Functions           """
-
+        """                             """
     # Creates a random point
     def Random_circle_configuration(self, D):
         rand_centre_x = np.random.randint(0,D.shape[0])
@@ -146,16 +146,17 @@ class Random_Circle_Generator:
 
 
 
-
+"""                                                                                               """
 """                                    Main Body Code Starts                                      """
-
-
+"""                                                                                               """
 
 RRT1 = RRT() # Create an object of class RRT
 RCG1 = Random_Circle_Generator() # Create onject for random circle generator
 
 
+"""                                                """
 """         Random circle generator code           """
+"""                                                """
 n = 0 # Counter for creating X amount of circles (Needs to only be updated when a valid circle is created)
 
 while n < RCG1.C:
@@ -168,8 +169,9 @@ while n < RCG1.C:
 
 
 
-
+"""                                                                     """
 """   Collision detection/prevention algoritm for START & GOAL point    """
+"""                                                                     """
 # Generate random starting point and check if point is in a circle if it is generate a new starting point, if it isn't break while
 s = 0
 while s<1:
@@ -198,7 +200,6 @@ while p<1:
 
 
 
-
 # Add starting position/node to vertice list
 RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, RRT1.q_init])
 
@@ -206,7 +207,9 @@ RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, RRT1.q_init])
 
 
 
+"""                                                """
 """         While iteration loop for RRT           """
+"""                                                """
 
 t = 0 # counting var for While
 Total_iterations = 0
@@ -216,8 +219,9 @@ while t < RRT1.K:
 
     Total_iterations += 1
 
-
+    """                                         """
     """ Collision detection/prevention algoritm """
+    """                                         """
     z = 0
     
     while z < 1:
@@ -245,17 +249,7 @@ while t < RRT1.K:
             
 
 
-            """ Check closest point intersect using a line """ """
-            #print('RRT1.q_new =',RRT1.q_new, '  RRT1.q_near =  ',RRT1.q_near, 'RCG1.circle_list[i][0] = ',RCG1.circle_list[i][0])
-            #p_close = RRT1.closest_point((RRT1.q_new[0],RRT1.q_new[1]), (RRT1.q_near[0], RRT1.q_near[1]), (RCG1.circle_list[i][0][0],RCG1.circle_list[i][0][1]))
-            p_close = RRT1.closest_point(RRT1.q_near, RRT1.q_new, RCG1.circle_list[i][0])
-            # If distance between start point and a circles radius <= that circle raius then start point is in circle, thus get a new start point.
-            if (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
-                z = 0
-            #print('p_close = ', p_close ,'Dist = ', (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
-            """
-
-            # for goal check
+            # For goal check
             """ Check closest point intersect using a line """ 
             #print('RRT1.q_new =',RRT1.q_new, '  RRT1.q_near =  ',RRT1.q_near, 'RCG1.circle_list[i][0] = ',RCG1.circle_list[i][0])
             #p_close = RRT1.closest_point((RRT1.q_new[0],RRT1.q_new[1]), (RRT1.q_near[0], RRT1.q_near[1]), (RCG1.circle_list[i][0][0],RCG1.circle_list[i][0][1]))
@@ -275,8 +269,7 @@ while t < RRT1.K:
             RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_goal, RRT1.q_new]) 
 
             #print('p_close = ', p_close ,'Dist = ', (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
-            
-        
+                  
 
     #print('RRT1.q_new: ', RRT1.q_new)
     if n == 0: # for goal check
@@ -308,14 +301,12 @@ while Optimal_path[s][1] != RRT1.q_init:
     s += 1
 
 #print('\n RRT1.vertices_list: ', RRT1.vertices_list, '\n \n \n')
-
-
 #print('RRT1: ', RRT1.vertices_list, '\n')
 
 
+"""                                """
 """         Plotting RRT           """
-
-
+"""                                """
                     ### PLOT LINE COLLECTION ###
 # create random data
 data = RRT1.vertices_list
@@ -334,13 +325,11 @@ ax = fig.add_subplot()
 ax.add_collection(lc)
 
 
+
                     ### Plot path in RED ###
 #print('\n line_data: ', line_data)
 O_path = LineCollection(Optimal_path, color = 'Red') # Make into a collection
 ax.add_collection(O_path )
-
-
-
 
                     ### Plot start point ###
 start_point_radius = [1] # Choose start point size
@@ -352,8 +341,6 @@ goal_point_radius = [1] # Choose goal point size
 Draw_goal_point = plt.Circle((RRT1.q_goal[0],RRT1.q_goal[1]), goal_point_radius[0], color = 'Blue')
 ax.add_artist( Draw_goal_point )
 
-
-
                     ### PLOT CIRCLE COLLECTION ###
 
 for i in range(0,len(RCG1.circle_list)):
@@ -361,33 +348,7 @@ for i in range(0,len(RCG1.circle_list)):
     Drawing_colored_circle = plt.Circle(( RCG1.circle_list[i][0][0] , RCG1.circle_list[i][0][1] ), RCG1.circle_list[i][1], color = 'black' )
     ax.add_artist( Drawing_colored_circle )
 
-"""Collection random circle plot"""
-#print('RCG1.circle_list[0][1] =', RCG1.circle_list[0][1], '\n')
-#print('RCG1.circle_list[0][0] =', RCG1.circle_list[0][0], '\n')
 
-
-""" This is for plotting with CircleCollectioin but keeps giving like a unit circle
-circle_radius_list = []
-circle_centre_list = []
-#Add for loop to loop through RCG1.circle_list and append all RADIUS
-for i in range(0,len(RCG1.circle_list)):
-    circle_radius_list.append(RCG1.circle_list[i][1])
-    #Add for loop to loop through RCG1.circle_list and append all CENTRE COORS
-    circle_centre_list.append(RCG1.circle_list[i][0])
-
-print('\n circle_radius_list: ', circle_radius_list)
-print('\n circle_centre_list: ', circle_centre_list)
-
-patches = [plt.Circle(center, size) for center, size in zip(circle_centre_list, circle_radius_list)]
-
-Circle_Params = CircleCollection(circle_radius_list, offsets = circle_centre_list, transOffset=ax.transData, color = 'black') # Make into a collection
-
-
-#Circle_Params = CircleCollection([RCG1.circle_list[0][1]], offsets = RCG1.circle_list[0][0], transOffset=ax.transData, color = 'black') # Make into a collection
-#Circle_Params = CircleCollection([10,10,10], offsets = [15,15], transOffset=ax.transData ,color = 'black') # Make into a collection
-ax.add_collection(Circle_Params)
-
-"""
 
 # set the limits
 ax.set_xlim([0, 100])
