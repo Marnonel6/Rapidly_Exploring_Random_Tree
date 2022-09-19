@@ -271,7 +271,7 @@ while t < RRT1.K:
             print('Goal Reached')
             # 1ste arg: Name of new node, 2nd argument: New child/node cooordinate, 3rd argument: Parent coordinates
             RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
-            RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_goal]) 
+            RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_goal, RRT1.q_new]) 
 
             #print('p_close = ', p_close ,'Dist = ', (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))), '  Radius = ', RCG1.circle_list[i][1], '  z = ', z)
             
@@ -284,6 +284,16 @@ while t < RRT1.K:
 
 
 print('\n Total_iterations =', Total_iterations)  
+
+
+                    ### Plot red path to goal ###
+#print('\n RRT1.vertices_list = ', RRT1.vertices_list)
+
+# Find the last node or goal node in RRT1.vertices_list
+retrieved_elements = list(filter(lambda x: RRT1.q_goal in x, RRT1.vertices_list[:]))
+print(retrieved_elements,'\n')
+print('goal = ', RRT1.q_goal)
+
 
 
 #print('\n RRT1.vertices_list: ', RRT1.vertices_list, '\n \n \n')
@@ -306,10 +316,13 @@ for i in range(0,len(data)):
 #print('\n line_data: ', line_data)
 lc = LineCollection(line_data) # Make into a collection
 
+
 # plot the data
 fig = plt.figure()
 ax = fig.add_subplot()
 ax.add_collection(lc)
+
+
 
 
 
