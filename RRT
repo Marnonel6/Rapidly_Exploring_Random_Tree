@@ -26,7 +26,7 @@ class RRT:
     def __init__(self):
         self.vertices_list = [] # (G) Has form [Node name, [node coordinate], [node parent cooordinate]]
         self.edge = [] # Holds the edges/line coordinates of the nodes/vertices
-        self.K = 500 # Number of itterations/vertices/nodes
+        self.K = 1500 # Number of itterations/vertices/nodes
         #self.q_init = [50,50] # Starting position
         self.q_goal = [] # Goal position
         self.q_init = [] # Starting position
@@ -69,7 +69,7 @@ class RRT:
         dx, dy = x2-x1, y2-y1
         det = dx*dx + dy*dy
         a = (dy*(y3-y1)+dx*(x3-x1))/det
-        return x1+a*dx, y1+a*dy
+        return [x1+a*dx, y1+a*dy], a
 
 
 
@@ -128,7 +128,7 @@ class Random_Circle_Generator:
     # Variables 
     def __init__(self):
         self.circle_list = [] # Has form [[center], [radius]] - Nested list
-        self.C = 30 # Number of Circles
+        self.C = 50 # Number of Circles
         self.c_rand = [] # Contains the new random circle parameters [[center],[radius]] from "def rand_circle(self)"
         self.max_radius = 10 # Maximum radius that can be created
     
@@ -208,15 +208,17 @@ RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_init, RRT1.q_init])
 """         While iteration loop for RRT           """
 
 t = 0 # counting var for While
+Total_iterations = 0
 # MAIN while loop
 while t < RRT1.K:
     t += 1 # Increment the counter
 
-
+    Total_iterations += 1
 
 
     """ Collision detection/prevention algoritm """
     z = 0
+    
     while z < 1:
         z = 1
         n = 1 # for goal check
@@ -256,10 +258,11 @@ while t < RRT1.K:
             """ Check closest point intersect using a line """ 
             #print('RRT1.q_new =',RRT1.q_new, '  RRT1.q_near =  ',RRT1.q_near, 'RCG1.circle_list[i][0] = ',RCG1.circle_list[i][0])
             #p_close = RRT1.closest_point((RRT1.q_new[0],RRT1.q_new[1]), (RRT1.q_near[0], RRT1.q_near[1]), (RCG1.circle_list[i][0][0],RCG1.circle_list[i][0][1]))
-            p_close = RRT1.closest_point(RRT1.q_new, RRT1.q_goal, RCG1.circle_list[i][0])
+            [p_close, a] = RRT1.closest_point(RRT1.q_new, RRT1.q_goal, RCG1.circle_list[i][0])
             # If distance between start point and a circles radius <= that circle radius then start point is in circle, thus get a new start point.
-            if (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
-                 n = 0
+            if a <= 1 and a >= 0: # Limits the shortest distance line check to between the two coordinates thus not checking the line extending past the two coordinates
+                if (np.sqrt(np.square(p_close[0]-RCG1.circle_list[i][0][0]) + np.square(p_close[1]-RCG1.circle_list[i][0][1]))) <= RCG1.circle_list[i][1]:
+                     n = 0
 
 
         # for goal check
@@ -279,7 +282,8 @@ while t < RRT1.K:
         # 1ste arg: Name of new node, 2nd argument: New child/node cooordinate, 3rd argument: Parent coordinates
         RRT1.vertices_list.append([len(RRT1.vertices_list), RRT1.q_new, RRT1.q_near]) 
 
-    
+
+print('\n Total_iterations =', Total_iterations)  
 
 
 #print('\n RRT1.vertices_list: ', RRT1.vertices_list, '\n \n \n')
